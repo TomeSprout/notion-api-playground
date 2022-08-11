@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client";
 import dotenv from "dotenv";
+import { type } from "os";
 
 dotenv.config();
 
@@ -10,11 +11,20 @@ async function main() {
     auth: process.env.NOTION_TOKEN,
   });
 
-  const response = await notion.databases.query({
+  const { results } = await notion.databases.query({
     database_id: databaseID,
+    filter: {
+      property: 'Favorites',
+      checkbox: {
+        equals: true,
+      }
+    },
   });
 
-  console.log("Got response:", response);
+  const fav = results.map((page: any) => {
+    console.log(page.properties.Name);
+  })
+
 }
 
 main()
